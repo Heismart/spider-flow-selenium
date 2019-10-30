@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>org.spiderflow</groupId>
 		<artifactId>spider-flow</artifactId>
-		<version>0.0.1</version>
+		<version>0.1.0</version>
 	</parent>
 	<artifactId>spider-flow-selenium</artifactId>
 	<name>spider-flow-selenium</name>
-	<url>https://gitee.com/jmxd/spider-flow/tree/master/spider-flow-selenium</url>
+	<url>https://gitee.com/jmxd/spider-flow-selenium</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>org.spiderflow</groupId>
 			<artifactId>spider-flow-api</artifactId>
-			<version>0.0.1</version>
+			<version>${spider-flow.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
