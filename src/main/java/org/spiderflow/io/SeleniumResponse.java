@@ -19,7 +19,12 @@ public class SeleniumResponse implements SpiderResponse{
 	public int getStatusCode() {
 		return 0;
 	}
-	
+
+	@Override
+	public String getTitle() {
+		return null;
+	}
+
 	@Override
 	public byte[] getBytes() {
 		return null;
@@ -49,6 +54,11 @@ public class SeleniumResponse implements SpiderResponse{
 
 	@Override
 	public String getContentType() {
+		return null;
+	}
+
+	@Override
+	public String getUrl() {
 		return null;
 	}
 }
