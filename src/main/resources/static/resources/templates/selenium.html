@@ -37,11 +37,12 @@
     			</div>
     		</div>
     		<div class="layui-form-item">
-    			<label class="layui-form-label">JavaScript</label>
+    			<label class="layui-form-label">驱动类型</label>
     			<div class="layui-input-block">
-    				<select name="javascriptEnabled">
- 						<option value="true" {{d.data.object.javascriptEnabled=='true' ? 'selected': ''}}>启用</option>
- 						<option value="true" {{d.data.object.javascriptEnabled=='false' ? 'selected': ''}}>禁用</option>
+    				<select name="driverType">
+ 						<option value="chrome" {{d.data.object.driverType=='chrome' ? 'selected': ''}}>chrome</option>
+						<option value="firefox" {{d.data.object.driverType=='firefox' ? 'selected': ''}}>firefox</option>
+						<option value="htmlunit" {{d.data.object.driverType=='htmlunit' ? 'selected': ''}}>htmlunit</option>
     				</select>
     			</div>
     		</div>
