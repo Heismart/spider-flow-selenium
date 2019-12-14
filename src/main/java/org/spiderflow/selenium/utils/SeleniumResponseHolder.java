@@ -13,7 +13,6 @@ public class SeleniumResponseHolder {
     private static Map<String, List<SeleniumResponse>> driverMap = new ConcurrentHashMap<>();
 
     public static void clear(SpiderContext context) {
-        System.out.println("clear");
         List<SeleniumResponse> responses = driverMap.get(context.getId());
         if (responses != null) {
             for (SeleniumResponse response : responses) {

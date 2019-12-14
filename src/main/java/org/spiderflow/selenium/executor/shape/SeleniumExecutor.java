@@ -92,13 +92,11 @@ public class SeleniumExecutor implements ShapeExecutor {
                 context.error("设置代理出错，异常信息：{}", e);
             }
         }
-        List<Map<String, String>> argumentMap = node.getListJsonValue("argument");
-        List<String> arguments = argumentMap.stream().map(m -> m.get("argument")).collect(Collectors.toList());
         WebDriver driver = null;
         try {
             String url = engine.execute(node.getStringJsonValue(URL), variables).toString();
             context.info("设置请求url:{}", url);
-            driver = providerMap.get(driverType).getWebDriver(arguments, proxy);
+            driver = providerMap.get(driverType).getWebDriver(node, proxy);
             driver.manage().timeouts().pageLoadTimeout(NumberUtils.toInt(node.getStringJsonValue(PAGE_LOAD_TIMEOUT), 60 * 1000), TimeUnit.MILLISECONDS);
             driver.manage().timeouts().implicitlyWait(NumberUtils.toInt(node.getStringJsonValue(IMPLICITLY_WAIT_TIMEOUT), 3 * 1000), TimeUnit.MILLISECONDS);
             driver.get(url);

@@ -1,7 +1,7 @@
 <div class="layui-tab layui-tab-fixed layui-tab-brief">
   <ul class="layui-tab-title">
     <li class="layui-this">基本配置</li>
-    <li>代理</li>
+    <li>参数设置</li>
   </ul>
   <div class="layui-tab-content editor-form-node">
     <div class="layui-tab-item layui-show">
@@ -48,20 +48,48 @@
     		</div>
     		<div class="layui-form-item">
     			<label class="layui-form-label">URL</label>
-    			<div class="layui-input-block">
-    				<input type="text" name="url" placeholder="请输入起始url" autocomplete="off" class="layui-input input-default" value="{{=d.data.object.url}}">
-    			</div>
+				<div codemirror="url" placeholder="请输入起始url" data-value="{{=d.data.object.url}}" autocomplete="off" class="layui-input-block"></div>
     		</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">代理</label>
+				<div codemirror="proxy" placeholder="host:port" data-value="{{=d.data.object.proxy}}" autocomplete="off" class="layui-input-block"></div>
+			</div>
     	</form>
     </div>
     <div class="layui-tab-item">
     	<form class="layui-form">
-	    	<div class="layui-form-item">
-	   			<label class="layui-form-label">代理</label>
-	   			<div class="layui-input-block">
-	   				<input type="text" name="proxy" placeholder="host:port" value="{{=d.data.object.proxy}}" autocomplete="off" class="layui-input input-default">
-	   			</div>
-	   		</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">窗口大小</label>
+				<div class="layui-input-block">
+					<input type="text" name="window-size" placeholder="1366,768" value="{{=d.data.object['window-size']}}" autocomplete="off" class="layui-input input-default">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">User-Agent</label>
+				<div class="layui-input-block">
+					<input type="text" name="user-agent" placeholder="" value="{{=d.data.object['user-agent']}}" autocomplete="off" class="layui-input input-default">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">驱动参数</label>
+				<div class="layui-input-block">
+					<input type="checkbox" title="无头模式" value="headless" lay-skin="primary" {{d.data.object['headless'] !== '0' ? 'checked' : ''}}/>
+					<input type="checkbox" title="禁用JS" value="javascript-disabled" lay-skin="primary" {{d.data.object['javascript-disabled'] !== '0' ? 'checked' : ''}}/>
+					<input type="checkbox" title="禁用图片" value="image-disabled" lay-skin="primary" {{d.data.object['image-disabled'] === '1' ? 'checked' : ''}}/>
+					<input type="checkbox" title="禁用插件" value="plugin-disable" lay-skin="primary" {{d.data.object['plugin-disable'] !== '0' ? 'checked' : ''}}/>
+					<input type="checkbox" title="禁用Java" value="java-disable" lay-skin="primary" {{d.data.object['java-disable'] !== '0' ? 'checked' : ''}}/>
+					<input type="checkbox" title="隐身模式" value="incognito" lay-skin="primary" {{d.data.object['incognito'] === '1' ? 'checked' : ''}}/>
+					<input type="checkbox" title="沙盒模式" value="sandbox" lay-skin="primary" {{d.data.object['sandbox'] === '1' ? 'checked' : ''}}/>
+					<input type="checkbox" title="隐藏滚动条" value="hide-scrollbar" lay-skin="primary" {{d.data.object['hide-scrollbar'] == '1' ? 'checked' : ''}}/>
+					<input type="checkbox" title="最大化" value="maximized" lay-skin="primary" {{d.data.object['maximized'] === '1' ? 'checked' : ''}}/>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">arguments</label>
+				<div class="layui-input-block">
+					<textarea class="layui-textarea" name="arguments" placeholder="一行一个">{{=d.data.object['arguments']}}</textarea>
+				</div>
+			</div>
 	   	</form>
     </div>
   </div>

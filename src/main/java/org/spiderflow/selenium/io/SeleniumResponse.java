@@ -72,7 +72,6 @@ public class SeleniumResponse implements SpiderResponse{
 		try {
 			driver.quit();
 		} catch (Exception ignored) {
-			ignored.printStackTrace();
 		}
 	}
 }
