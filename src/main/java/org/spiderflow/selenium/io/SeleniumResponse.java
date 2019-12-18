@@ -3,6 +3,7 @@ package org.spiderflow.selenium.io;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.spiderflow.io.SpiderResponse;
 
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import java.util.Set;
 public class SeleniumResponse implements SpiderResponse{
 	
 	private WebDriver driver;
+
+	private Actions actionsObj;
 	
 	public SeleniumResponse(WebDriver driver){
 		this.driver = driver;
@@ -73,5 +76,16 @@ public class SeleniumResponse implements SpiderResponse{
 			driver.quit();
 		} catch (Exception ignored) {
 		}
+	}
+
+	public Actions action(){
+		if(actionsObj == null){
+			this.actionsObj = new Actions(this.driver);
+		}
+		return this.actionsObj;
+	}
+
+	public void clearAction(){
+		this.actionsObj = null;
 	}
 }

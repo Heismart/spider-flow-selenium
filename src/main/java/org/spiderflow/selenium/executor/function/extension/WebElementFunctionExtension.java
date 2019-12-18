@@ -8,28 +8,30 @@ import org.spiderflow.executor.FunctionExtension;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WebElementFunctionExtension implements FunctionExtension{
-	
-	@Override
-	public Class<?> support() {
-		return WebElement.class;
-	}
-	
-	public static WebElement sendKeys(WebElement element,String keys){
-		element.sendKeys(keys);
-		return element;
-	}
+public class WebElementFunctionExtension implements FunctionExtension {
 
-	@Comment("获取节点html内容")
-	@Example("${webElementVar.html()}")
-	public static String html(WebElement element){
-		return element.getAttribute("innerHTML");
-	}
+    @Override
+    public Class<?> support() {
+        return WebElement.class;
+    }
 
-	@Comment("截图")
-	@Example("${webElementVar.screenshot()}")
-	public static byte[] screenshot(WebElement element){
-		return element.getScreenshotAs(OutputType.BYTES);
-	}
+    @Comment("获取节点html内容")
+    @Example("${webElementVar.sendKeys('Hello SpiderFlow')}")
+    public static WebElement sendKeys(WebElement element, String keys) {
+        element.sendKeys(keys);
+        return element;
+    }
+
+    @Comment("获取节点html内容")
+    @Example("${webElementVar.html()}")
+    public static String html(WebElement element) {
+        return element.getAttribute("innerHTML");
+    }
+
+    @Comment("截图")
+    @Example("${webElementVar.screenshot()}")
+    public static byte[] screenshot(WebElement element) {
+        return element.getScreenshotAs(OutputType.BYTES);
+    }
 
 }
