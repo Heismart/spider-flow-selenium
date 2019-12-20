@@ -3,6 +3,7 @@ package org.spiderflow.selenium.executor.shape;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,6 +14,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spiderflow.ExpressionEngine;
+import org.spiderflow.context.CookieContext;
 import org.spiderflow.context.SpiderContext;
 import org.spiderflow.executor.ShapeExecutor;
 import org.spiderflow.model.Shape;
@@ -24,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.net.URL;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +49,8 @@ public class SeleniumExecutor implements ShapeExecutor {
     public static final String IMPLICITLY_WAIT_TIMEOUT = "implicitlyWaitTimeout";
 
     public static final String PROXY = "proxy";
+
+    public static final String COOKIE_AUTO_SET = "cookie-auto-set";
 
     @Autowired
     private List<DriverProvider> driverProviders;
@@ -92,6 +98,12 @@ public class SeleniumExecutor implements ShapeExecutor {
                 context.error("设置代理出错，异常信息：{}", e);
             }
         }
+        Object oldResp = variables.get("sele");
+        //REVIEW 一个任务流中只能有一个Driver，在页面跳转操作可以使用sele.toUrl，打来其他Driver时，原页面会关闭
+        if(oldResp instanceof SeleniumResponse){
+            SeleniumResponse oldResponse = (SeleniumResponse) oldResp;
+            oldResponse.quit();
+        }
         WebDriver driver = null;
         try {
             String url = engine.execute(node.getStringJsonValue(URL), variables).toString();
@@ -99,17 +111,32 @@ public class SeleniumExecutor implements ShapeExecutor {
             driver = providerMap.get(driverType).getWebDriver(node, proxy);
             driver.manage().timeouts().pageLoadTimeout(NumberUtils.toInt(node.getStringJsonValue(PAGE_LOAD_TIMEOUT), 60 * 1000), TimeUnit.MILLISECONDS);
             driver.manage().timeouts().implicitlyWait(NumberUtils.toInt(node.getStringJsonValue(IMPLICITLY_WAIT_TIMEOUT), 3 * 1000), TimeUnit.MILLISECONDS);
+            //设置自动管理的Cookie
+            boolean cookieAutoSet = !"0".equals(node.getStringJsonValue(COOKIE_AUTO_SET));
+            CookieContext cookieContext = context.getCookieContext();
+            //初始化打开浏览器
+            driver.get(url);
+            //设置浏览器Cookies环境
+            if(cookieAutoSet){
+                driver.manage().deleteAllCookies();
+                URL tempUrl = new URL(url);
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.MONTH, 1);
+                for (Map.Entry<String, String> item : cookieContext.entrySet()) {
+                    Cookie cookie = new Cookie(item.getKey(), item.getValue(), tempUrl.getHost(), "/", calendar.getTime() , false, false);
+                    driver.manage().addCookie(cookie);
+                }
+                context.debug("自动设置Cookie：{}", cookieContext);
+            }
+            //访问跳转url网站
             driver.get(url);
             SeleniumResponse response = new SeleniumResponse(driver);
             SeleniumResponseHolder.add(context, response);
-            Object oldResp = variables.get("resp");
-
-            //TODO 会造成其他线程无法使用resp,但是也不能长期不释放...综合考虑在请求时，如果变量中有SeleniumResponse，就释放掉之前的driver
-            if(oldResp instanceof SeleniumResponse){
-                SeleniumResponse oldResponse = (SeleniumResponse) oldResp;
-                oldResponse.quit();
+            if(cookieAutoSet){
+                Map<String, String> cookies = response.getCookies();
+                cookieContext.putAll(cookies);
             }
-            variables.put("resp", response);
+            variables.put("sele", response);
         } catch (Exception e) {
             context.error("请求出错，异常信息：{}", e);
             if (driver != null) {
