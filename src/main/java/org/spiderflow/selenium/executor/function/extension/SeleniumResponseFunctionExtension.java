@@ -22,7 +22,7 @@ public class SeleniumResponseFunctionExtension implements FunctionExtension {
     }
 
     @Comment("根据css选择器提取请求结果")
-    @Example("${resp.selector('div > a')}")
+    @Example("${sele.selector('div > a')}")
     public static WebElementWrapper selector(SeleniumResponse response, String css) {
         try {
             return new WebElementWrapper(response, response.getDriver().findElement(By.cssSelector(css)));
@@ -32,7 +32,7 @@ public class SeleniumResponseFunctionExtension implements FunctionExtension {
     }
 
     @Comment("根据css选择器提取请求结果")
-    @Example("${resp.selector('div > a')}")
+    @Example("${sele.selector('div > a')}")
     public static WebElements selectors(SeleniumResponse response, String css) {
         try {
             return new WebElements(response, response.getDriver().findElements(By.cssSelector(css)));
@@ -42,7 +42,7 @@ public class SeleniumResponseFunctionExtension implements FunctionExtension {
     }
 
     @Comment("根据xpath在请求结果中查找")
-    @Example("${resp.xpaths('//a')}")
+    @Example("${sele.xpaths('//a')}")
     public static WebElements xpaths(SeleniumResponse response, String xpath) {
         try {
             return new WebElements(response, response.getDriver().findElements(By.xpath(xpath)));
@@ -52,7 +52,7 @@ public class SeleniumResponseFunctionExtension implements FunctionExtension {
     }
 
     @Comment("根据xpath在请求结果中查找")
-    @Example("${resp.xpath('//a')}")
+    @Example("${sele.xpath('//a')}")
     public static WebElement xpath(SeleniumResponse response, String xpath) {
         try {
             return new WebElementWrapper(response, response.getDriver().findElement(By.xpath(xpath)));
@@ -62,13 +62,13 @@ public class SeleniumResponseFunctionExtension implements FunctionExtension {
     }
 
     @Comment("执行js")
-    @Example("${resp.executeScript(\"document.write('hello spider-flow !')\")}")
+    @Example("${sele.executeScript(\"document.write('hello spider-flow !')\")}")
     public static Object executeScript(SeleniumResponse response, String script) {
         return executeScript(response, script, null);
     }
 
     @Comment("执行js")
-    @Example("${resp.executeScript(\"document.write('hello '+arguments[0]+' !')\",\"spider-flow\")}")
+    @Example("${sele.executeScript(\"document.write('hello '+arguments[0]+' !')\",\"spider-flow\")}")
     public static Object executeScript(SeleniumResponse response, String script, List<Object> arguments) {
         JavascriptExecutor executor = null;
         try {
@@ -77,6 +77,13 @@ public class SeleniumResponseFunctionExtension implements FunctionExtension {
             throw new RuntimeException("该驱动不支持执行js");
         }
         return executor.executeScript(script, arguments);
+    }
+
+    @Comment("跳转URL")
+    @Example("${sele.toUrl(newUrl)}")
+    public static SeleniumResponse toUrl(SeleniumResponse response, String newUrl) {
+        response.getDriver().get(newUrl);
+        return response;
     }
 
 }
