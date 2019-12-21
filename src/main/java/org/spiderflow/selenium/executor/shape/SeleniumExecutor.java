@@ -4,13 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spiderflow.ExpressionEngine;
@@ -87,19 +81,19 @@ public class SeleniumExecutor implements ShapeExecutor {
         String proxy = node.getStringJsonValue(PROXY);
         String driverType = node.getStringJsonValue(DRIVER_TYPE);
         if (StringUtils.isBlank(driverType) || !providerMap.containsKey(driverType)) {
-            context.error("找不到驱动：{}", driverType);
+            logger.error("找不到驱动：{}", driverType);
             return;
         }
         if (StringUtils.isNotBlank(proxy)) {
             try {
                 proxy = engine.execute(proxy, variables).toString();
-                context.info("设置代理：{}", proxy);
+                logger.info("设置代理：{}", proxy);
             } catch (Exception e) {
-                context.error("设置代理出错，异常信息：{}", e);
+                logger.error("设置代理出错，异常信息：{}", e);
             }
         }
-        Object oldResp = variables.get("sele");
-        //REVIEW 一个任务流中只能有一个Driver，在页面跳转操作可以使用sele.toUrl，打来其他Driver时，原页面会关闭
+        Object oldResp = variables.get("resp");
+        //REVIEW 一个任务流中只能有一个Driver，在页面跳转操作可以使用resp.toUrl，打来其他Driver时，原页面会关闭
         if(oldResp instanceof SeleniumResponse){
             SeleniumResponse oldResponse = (SeleniumResponse) oldResp;
             oldResponse.quit();
@@ -107,7 +101,7 @@ public class SeleniumExecutor implements ShapeExecutor {
         WebDriver driver = null;
         try {
             String url = engine.execute(node.getStringJsonValue(URL), variables).toString();
-            context.info("设置请求url:{}", url);
+            logger.info("设置请求url:{}", url);
             driver = providerMap.get(driverType).getWebDriver(node, proxy);
             driver.manage().timeouts().pageLoadTimeout(NumberUtils.toInt(node.getStringJsonValue(PAGE_LOAD_TIMEOUT), 60 * 1000), TimeUnit.MILLISECONDS);
             driver.manage().timeouts().implicitlyWait(NumberUtils.toInt(node.getStringJsonValue(IMPLICITLY_WAIT_TIMEOUT), 3 * 1000), TimeUnit.MILLISECONDS);
@@ -126,7 +120,7 @@ public class SeleniumExecutor implements ShapeExecutor {
                     Cookie cookie = new Cookie(item.getKey(), item.getValue(), tempUrl.getHost(), "/", calendar.getTime() , false, false);
                     driver.manage().addCookie(cookie);
                 }
-                context.debug("自动设置Cookie：{}", cookieContext);
+                logger.debug("自动设置Cookie：{}", cookieContext);
             }
             //访问跳转url网站
             driver.get(url);
@@ -136,9 +130,9 @@ public class SeleniumExecutor implements ShapeExecutor {
                 Map<String, String> cookies = response.getCookies();
                 cookieContext.putAll(cookies);
             }
-            variables.put("sele", response);
+            variables.put("resp", response);
         } catch (Exception e) {
-            context.error("请求出错，异常信息：{}", e);
+            logger.error("请求出错，异常信息：{}", e);
             if (driver != null) {
                 try {
                     driver.quit();
