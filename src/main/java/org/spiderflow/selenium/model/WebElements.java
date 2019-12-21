@@ -32,7 +32,7 @@ public class WebElements extends ArrayList<WebElement> {
     }
 
     public List<String> text() {
-        return attr("text");
+        return this.stream().map(WebElement::getText).collect(Collectors.toList());
     }
 
     public WebElements selectors(String css) {

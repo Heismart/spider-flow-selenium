@@ -28,6 +28,18 @@ public class WebElementFunctionExtension implements FunctionExtension {
         return element.getAttribute("innerHTML");
     }
 
+    @Comment("获取节点html内容")
+    @Example("${webElementVar.text()}")
+    public static String text(WebElement element) {
+        return element.getText();
+    }
+
+    @Comment("获取节点属性")
+    @Example("${webElementVar.attr('href')}")
+    public static String attr(WebElement element,String attributeName) {
+        return element.getAttribute(attributeName);
+    }
+
     @Comment("截图")
     @Example("${webElementVar.screenshot()}")
     public static byte[] screenshot(WebElement element) {

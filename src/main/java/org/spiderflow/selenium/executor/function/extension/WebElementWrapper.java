@@ -118,4 +118,8 @@ public class WebElementWrapper implements WebElement {
     public WebElement element(){
         return this.element;
     }
+
+    public SeleniumResponse getResponse() {
+        return response;
+    }
 }
