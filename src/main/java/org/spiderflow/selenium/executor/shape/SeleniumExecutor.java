@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 @Component
 public class SeleniumExecutor implements ShapeExecutor {
 
+    public static final String NODE_VARIABLE_NAME = "nodeVariableName";
+
     public static final String DRIVER_TYPE = "driverType";
 
     public static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
@@ -80,6 +82,10 @@ public class SeleniumExecutor implements ShapeExecutor {
     public void execute(SpiderNode node, SpiderContext context, Map<String, Object> variables) {
         String proxy = node.getStringJsonValue(PROXY);
         String driverType = node.getStringJsonValue(DRIVER_TYPE);
+        String nodeVariableName = node.getStringJsonValue(NODE_VARIABLE_NAME);
+        if (StringUtils.isBlank(nodeVariableName)) {
+            nodeVariableName = "resp";
+        }
         if (StringUtils.isBlank(driverType) || !providerMap.containsKey(driverType)) {
             logger.error("找不到驱动：{}", driverType);
             return;
@@ -92,8 +98,8 @@ public class SeleniumExecutor implements ShapeExecutor {
                 logger.error("设置代理出错，异常信息：{}", e);
             }
         }
-        Object oldResp = variables.get("resp");
-        //REVIEW 一个任务流中只能有一个Driver，在页面跳转操作可以使用resp.toUrl，打来其他Driver时，原页面会关闭
+        Object oldResp = variables.get(nodeVariableName);
+        //REVIEW 一个任务流中只能有一个Driver，在页面跳转操作可以使用resp.toUrl。打开其他Driver时，原页面会关闭（同一个变量名）
         if(oldResp instanceof SeleniumResponse){
             SeleniumResponse oldResponse = (SeleniumResponse) oldResp;
             oldResponse.quit();
@@ -130,7 +136,7 @@ public class SeleniumExecutor implements ShapeExecutor {
                 Map<String, String> cookies = response.getCookies();
                 cookieContext.putAll(cookies);
             }
-            variables.put("resp", response);
+            variables.put(nodeVariableName, response);
         } catch (Exception e) {
             logger.error("请求出错，异常信息：{}", e);
             if (driver != null) {
