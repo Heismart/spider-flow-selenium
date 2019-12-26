@@ -6,12 +6,16 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.spiderflow.annotation.Comment;
 import org.spiderflow.annotation.Example;
+import org.spiderflow.context.CookieContext;
+import org.spiderflow.context.SpiderContext;
+import org.spiderflow.context.SpiderContextHolder;
 import org.spiderflow.executor.FunctionExtension;
 import org.spiderflow.selenium.io.SeleniumResponse;
 import org.spiderflow.selenium.model.WebElements;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class SeleniumResponseFunctionExtension implements FunctionExtension {
@@ -86,4 +90,15 @@ public class SeleniumResponseFunctionExtension implements FunctionExtension {
         return response;
     }
 
+    @Comment("加载Cookies")
+    @Example("${resp.loadCookies()}")
+    public static SeleniumResponse loadCookies(SeleniumResponse response) {
+        SpiderContext spiderContext = SpiderContextHolder.get();
+        CookieContext cookieContext = spiderContext.getCookieContext();
+        Map<String, String> cookies = response.getCookies();
+        if (cookies != null && !cookies.isEmpty()) {
+            cookieContext.putAll(cookies);
+        }
+        return response;
+    }
 }
