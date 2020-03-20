@@ -2,7 +2,7 @@ package org.spiderflow.selenium.io;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.spiderflow.io.SpiderResponse;
 
@@ -69,6 +69,24 @@ public class SeleniumResponse implements SpiderResponse{
 
 	public WebDriver getDriver() {
 		return driver;
+	}
+
+	public SeleniumResponse switchTo(int index){
+		driver.switchTo().frame(index);
+		return this;
+	}
+	public SeleniumResponse switchTo(String name){
+		driver.switchTo().frame(name);
+		return this;
+	}
+	public SeleniumResponse switchTo(WebElement element){
+		driver.switchTo().frame(element);
+		return this;
+	}
+
+	public SeleniumResponse switchToDefault(){
+		driver.switchTo().defaultContent();
+		return this;
 	}
 
 	public void quit(){
