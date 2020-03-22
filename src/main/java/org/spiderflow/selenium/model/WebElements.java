@@ -19,7 +19,7 @@ public class WebElements extends ArrayList<WebElement> {
     }
 
     public WebElements(SeleniumResponse response, List<WebElement> elements) {
-        super(elements == null ? Collections.emptyList() : elements);
+        super(elements == null ? Collections.emptyList() : elements.stream().map(e->new WebElementWrapper(response,e)).collect(Collectors.toList()));
         this.response = response;
     }
 
