@@ -6,9 +6,10 @@ import org.openqa.selenium.WebElement;
 import org.spiderflow.annotation.Comment;
 import org.spiderflow.annotation.Example;
 import org.spiderflow.executor.FunctionExtension;
-import org.spiderflow.selenium.io.SeleniumResponse;
 import org.spiderflow.selenium.model.WebElements;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class WebElementWrapperFunctionExtension implements FunctionExtension {
@@ -40,9 +41,9 @@ public class WebElementWrapperFunctionExtension implements FunctionExtension {
 
     @Comment("根据xpath在请求结果中查找")
     @Example("${elementVar.xpaths('//a')}")
-    public static WebElements xpaths(SeleniumResponse response, String xpath) {
+    public static List<WebElement> xpaths(WebElementWrapper wrapper, String xpath) {
         try {
-            return new WebElements(response, response.getDriver().findElements(By.xpath(xpath)));
+            return wrapper.findElements(By.xpath(xpath));
         } catch (NoSuchElementException e) {
             return null;
         }
@@ -50,9 +51,9 @@ public class WebElementWrapperFunctionExtension implements FunctionExtension {
 
     @Comment("根据xpath在请求结果中查找")
     @Example("${elementVar.xpath('//a')}")
-    public static WebElement xpath(SeleniumResponse response, String xpath) {
+    public static WebElement xpath(WebElementWrapper wrapper, String xpath) {
         try {
-            return new WebElementWrapper(response, response.getDriver().findElement(By.xpath(xpath)));
+            return wrapper.findElement(By.xpath(xpath));
         } catch (NoSuchElementException e) {
             return null;
         }
