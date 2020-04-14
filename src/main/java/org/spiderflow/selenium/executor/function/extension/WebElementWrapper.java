@@ -122,4 +122,20 @@ public class WebElementWrapper implements WebElement {
     public SeleniumResponse getResponse() {
         return response;
     }
+
+    public String html(){
+        return element.getAttribute("innerHTML");
+    }
+
+    public String text(){
+        return element.getAttribute("innerText");
+    }
+
+    public String css(String style){
+        return element.getCssValue(style);
+    }
+
+    public String attr(String value){
+        return element.getAttribute(value);
+    }
 }
