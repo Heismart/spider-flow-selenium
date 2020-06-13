@@ -36,7 +36,7 @@ public class SeleniumResponseFunctionExtension implements FunctionExtension {
     }
 
     @Comment("根据css选择器提取请求结果")
-    @Example("${resp.selector('div > a')}")
+    @Example("${resp.selectors('div > a')}")
     public static WebElements selectors(SeleniumResponse response, String css) {
         try {
             return new WebElements(response, response.getDriver().findElements(By.cssSelector(css)));
