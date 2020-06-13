@@ -2,6 +2,7 @@ package org.spiderflow.selenium.executor.function.extension;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select;
 import org.spiderflow.selenium.io.SeleniumResponse;
 
 import java.util.List;
@@ -117,6 +118,10 @@ public class WebElementWrapper implements WebElement {
 
     public WebElement element(){
         return this.element;
+    }
+
+    public Select select(){
+        return new Select(this.element);
     }
 
     public SeleniumResponse getResponse() {
